@@ -1,0 +1,21 @@
+{
+  "version": "1.0",
+  "defaultProvider": "cdnjs",
+  "libraries": [
+    {
+      "library": "popper.js@2.9.2",
+      "destination": "wwwroot/popper.js/",
+      "files": [
+        "umd/popper.min.js",
+        "umd/popper.js"
+      ]
+    },
+    {
+      "library": "mdb-ui-kit@3.5.0",
+      "destination": "wwwroot/mdb-ui-kit/",
+      "files": [
+        "mdb.min.js"
+      ]
+    }
+  ]
+}

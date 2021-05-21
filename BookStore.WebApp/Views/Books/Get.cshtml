@@ -1,0 +1,105 @@
+﻿@model IEnumerable<BookStore.Models.Book>
+@{
+    ViewData["Title"] = "Books";
+}
+<!-- Add pagination and search by atributes -->
+<div class="text-center">
+    <h1 class="display-4 mb-4">Books</h1>
+    <form class="text-left">
+        <div class="form-row">
+            <div class="form-group col-md-7">
+                <label>Search</label>
+                <input type="email" class="form-control" placeholder="Search by key word">
+            </div>
+            <div class="form-group col-md-2">
+                <label>Prise min</label>
+                <input type="number" class="form-control" placeholder="Enter min prise">
+            </div>
+            <div class="form-group col-md-2">
+                <label>Prise max</label>
+                <input type="number" class="form-control" placeholder="Enter max prise">
+            </div>
+            <div class="form-group col-md-1">
+                <button type="submit" class="btn btn-primary w-100" style=" margin-top: 32px; height: 37px">Search</button>
+            </div>
+        </div>
+    </form>
+    <div class="mb-2" style="overflow-x: scroll; width: 100%">
+        <table class="table table-bordered table-hover bg-white mb-0" style="width: 1500px">
+            <thead>
+                <tr>
+                    <th scope="col">Id</th>
+                    <th scope="col">Name</th>
+                    <th scope="col">Author</th>
+                    <th scope="col">Publisher</th>
+                    <th scope="col">Prise</th>
+                    <th scope="col">Recommended Prise</th>
+                    <th scope="col">Date</th>
+                    <th scope="col">Revision Number</th>
+                    <th scope="col">Assessment</th>
+                </tr>
+            </thead>
+            <tbody id="myTable">
+                @foreach (var book in Model)
+                {
+                    <tr>
+                        <td>@book.Id</td>
+                        <td>@book.Name</td>
+                        <td>@book.Author.FullName</td>
+                        <td>@book.Publisher</td>
+                        <td>@book.Prise$</td>
+                        <td>@book.RecommendedPrise$</td>
+                        <td>@book.Date.ToString("dd/MM/yyyy")</td>
+                        <td>@book.RevisionNumber</td>
+                        <td>@book.Assessment</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+    </div>
+
+    <div class="row">
+        <div class="col-sm d-flex justify-content-start">
+            <select class="custom-select custom-select-sm mb-0" style="width: 60px">
+                <option selected>10</option>
+                <option value="1">15</option>
+            </select>
+        </div>
+        <div class="col-sm">
+            <p class="text-muted text-nowrap mb-0 mr-4">Page 1 of 20</p>
+        </div>
+        <div class="col-sm d-flex justify-content-end">
+            <div class="btn-group">
+                <button type="button" class="btn btn-sm btn-primary"><</button>
+                <button type="button" class="btn btn-sm btn-primary">1</button>
+                <button type="button" class="btn btn-sm btn-primary">2</button>
+                <button type="button" class="btn btn-sm btn-primary">3</button>
+                <button type="button" class="btn btn-sm btn-primary">4</button>
+                <button type="button" class="btn btn-sm btn-primary">...</button>
+                <button type="button" class="btn btn-sm btn-primary">></button>
+            </div>
+        </div>
+    </div>
+
+    <a type="button" class="btn btn-primary mt-5 mb-2" style="width:130px" asp-controller="Books" asp-action="Create">Create</a>
+</div>
+
+@section Scripts
+{
+    <script>
+        $("tr").click(function () {
+            var id = $('td:first', this).text();
+            window.location.href = '/Books/' + id;
+        });
+
+        $(document).ready(function () {
+            $("#myInput").on("keyup", function () {
+                var value = $(this).val().toLowerCase();
+                $("#myTable tr").filter(function () {
+                    $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+                });
+            });
+        });
+    </script>
+}

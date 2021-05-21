@@ -1,0 +1,55 @@
+﻿@model BookStore.Models.Employee
+
+@{
+    ViewData["Title"] = "Employee";
+    ViewData["DeleteLable"] = $"employee {Model.FullName}";
+    ViewData["Controller"] = "Employees";
+}
+
+<p>Id: @Model.Id</p>
+<div class="d-flex align-content-between mb-4">
+    <h1 class="flex-fill display-4">@Model.FullName</h1>
+    <div class="d-flex">
+        <div class="mr-2">
+            <a asp-controller="Employees" asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary mt-2">Edit</a>
+        </div>
+        <div>
+            <button type="button" class="btn btn-danger mt-2" data-toggle="modal" data-target="#delete">Delete</button>
+            @await Html.PartialAsync("~/Views/Shared/_ConfirmDelete.cshtml", Model, ViewData)
+        </div>
+    </div>
+</div>
+<hr class="mb-3" />
+<div class="d-flex mb-4">
+    <div class="mr-5" style="font-size:150px">&#128104;&#8205;&#128188;</div>
+    <div class="font-italic mt-5">
+        <p>Position: @Model.Position</p>
+        <p>Phone number: @Model.Phone</p>
+        <p>Birthday: @Model.Birthday.ToString("dd.MM.yyyy")</p>
+        <p>First day: @Model.FirstDay.ToString("dd.MM.yyyy")</p>
+    </div>
+</div>
+
+@if (Model.Orders.Any())
+{
+    <hr class="mb-4" />
+    <h4 class="mb-4">Orders</h4>
+    <ul class="list-group">
+        @foreach (var order in Model.Orders)
+        {
+
+            var classState = order.State switch
+            {
+                BookStore.Models.OrderState.ToSend => "secondary",
+                BookStore.Models.OrderState.Sended => "warning",
+                BookStore.Models.OrderState.SelfReceived => "success",
+                BookStore.Models.OrderState.Received => "success",
+            };
+
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+                <a asp-controller="Orders" asp-action="Details" asp-route-id="@order.Id">"@order.Book.Name" - @order.Book.Author.FullName</a>
+                <span class="badge badge-@classState badge-pill">@order.State</span>
+            </li>
+        }
+    </ul>
+}

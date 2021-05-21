@@ -1,0 +1,83 @@
+﻿@model BookStore.WebApp.Models.HomeViewModel
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+<div class="text-center">
+    <div class="jumbotron mb-5">
+        <h1 class="display-3">Book Store &#128217;</h1>
+        <hr class="my-4">
+        <div class="row">
+            <div class="col">
+                <p>All time</p>
+                <h2>@Decimal.Round(Model.TotalSum)$</h2>
+            </div>
+            <div class="col">
+                <p>Yearly</p>
+                <h2>@Decimal.Round(Model.YearlySum)$</h2>
+            </div>
+            <div class="col">
+                <p>Monthly</p>
+                <h2>@Decimal.Round(Model.MonthlySum)$</h2>
+            </div>
+        </div>
+    </div>
+    <div class="row mb-5">
+        <div class="col">
+            <h2>Top books &#128218;</h2>
+            <div class="list-group">
+                @foreach (var book in Model.Books)
+                {
+                    <a asp-controller="Books" asp-action="Details" asp-route-id="@book.Id"
+                       class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                        @book.Name
+                        <span>
+                            <span style="font-size:10px" class="text-muted">Total orders:</span>
+                            <span class="badge badge-primary badge-pill ml-1">@book.Orders.Count()</span>
+                        </span>
+                    </a>
+
+                }
+            </div>
+        </div>
+        <div class="col">
+            <h2>Top employees &#128170;</h2>
+            <div class="list-group">
+                @foreach (var employee in Model.Employees)
+                {
+                    <a asp-controller="Employees" asp-action="Details" asp-route-id="@employee.Id" class="list-group-item list-group-item-action">@employee.FullName</a>
+                }
+            </div>
+        </div>
+        <div class="col">
+            <h2>Top customers &#129297;</h2>
+            <div class="list-group">
+                @foreach (var customer in Model.Customers)
+                {
+                    <a asp-controller="Customers" asp-action="Details" asp-route-id="@customer.Id" class="list-group-item list-group-item-action">@customer.Name</a>
+                }
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col">
+            <h4>New Employees &#127891;</h4>
+            <div class="list-group">
+                @foreach (var employee in Model.NewEmployees)
+                {
+                    <a asp-controller="Employees" asp-action="Details" asp-route-id="@employee.Id" class="list-group-item list-group-item-action">@employee.FullName</a>
+                }
+            </div>
+        </div>
+        <div class="col">
+            <h4>Today Birstdays &#129395;</h4>
+            <div class="list-group">
+                @foreach (var employee in Model.BirthdayEmployees)
+                {
+                    <a asp-controller="Employees" asp-action="Details" asp-route-id="@employee.Id" class="list-group-item list-group-item-action">@employee.FullName</a>
+                }
+            </div>
+        </div>
+    </div>
+</div>

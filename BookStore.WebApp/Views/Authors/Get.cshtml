@@ -1,0 +1,65 @@
+﻿@model IEnumerable<BookStore.Models.Author>
+@{
+    ViewData["Title"] = "Authors";
+}
+
+<div class="text-center">
+    <h1 class="display-4 mb-4">Authors</h1>
+
+    <form class="text-left">
+        <div class="form-row">
+            <div class="form-group col-md-11">
+                <label>Search</label>
+                <input type="text" class="form-control" placeholder="Search by key word">
+            </div>
+            <div class="form-group col-md-1">
+                <button type="submit" class="btn btn-primary w-100" style=" margin-top: 32px; height: 37px">Search</button>
+            </div>
+        </div>
+    </form>
+    <div class="mb-2">
+        <table class="table table-bordered table-hover bg-white mb-0">
+            <thead>
+                <tr>
+                    <th scope="col">Id</th>
+                    <th scope="col">Name</th>
+                    <th scope="col">Birthday</th>
+                    <th scope="col">Death</th>
+                </tr>
+            </thead>
+            <tbody id="myTable">
+                @foreach (var employee in Model)
+                {
+                    var death = employee.Death?.ToString("dd.MM.yyyy") ?? "today";
+                    <tr>
+                        <td>@employee.Id</td>
+                        <td>@employee.FullName</td>
+                        <td>@employee.Birthday.ToString("dd.MM.yyyy")</td>
+                        <td>@death</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <a type="button" class="btn btn-primary mb-2" style="width:130px" asp-controller="Authors" asp-action="Create">Create</a>
+</div>
+
+@section Scripts
+{
+    <script>
+        $("tr").click(function () {
+            var id = $('td:first', this).text();
+            window.location.href = '/Authors/' + id;
+        });
+
+        $(document).ready(function () {
+            $("#myInput").on("keyup", function () {
+                var value = $(this).val().toLowerCase();
+                $("#myTable tr").filter(function () {
+                    $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+                });
+            });
+        });
+    </script>
+}

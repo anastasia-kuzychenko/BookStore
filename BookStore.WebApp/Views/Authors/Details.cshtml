@@ -1,0 +1,45 @@
+﻿@model BookStore.Models.Author
+
+@{
+    ViewData["Title"] = "Author";
+    ViewData["DeleteLable"] = $"{Model.Name}";
+    ViewData["Controller"] = "Authors";
+    var death = Model.Death?.ToString("dd.MM.yyyy") ?? "today";
+}
+
+<p>Id: @Model.Id</p>
+<div class="d-flex align-content-between mb-4">
+    <h1 class="flex-fill display-4">@Model.FullName</h1>
+    <div class="d-flex">
+        <div class="mr-2">
+            <a asp-controller="Authors" asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary mt-2">Edit</a>
+        </div>
+        <div>
+            <button type="button" class="btn btn-danger mt-2" data-toggle="modal" data-target="#delete">Delete</button>
+            @await Html.PartialAsync("~/Views/Shared/_ConfirmDelete.cshtml", Model, ViewData)
+        </div>
+    </div>
+</div>
+<hr class="mb-4" />
+<div class="d-flex mb-4">
+    <div class="mr-5" style="font-size:150px">&#10002;</div>
+    <div style="max-width: 650px">
+        <p class="font-italic">@Model.Birthday.ToString("dd.MM.yyyy") - @death</p>
+        <h3>Info</h3>
+        <p>@Model.Info</p>
+    </div>
+</div>
+@if (Model.Books.Any())
+{
+    <hr class="mb-4" />
+    <h3 class="mb-4">Books</h3>
+    <ul class="list-group mb-4">
+        @foreach (var book in Model.Books)
+        {
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+                <a asp-controller="Books" asp-action="Details" asp-route-id="@book.Id">"@book.Name"</a>
+                <span class="badge badge-primary badge-pill">@book.Prise$</span>
+            </li>
+        }
+    </ul>
+}

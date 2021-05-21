@@ -1,0 +1,63 @@
+﻿@model IEnumerable<BookStore.Models.Customer>
+@{
+    ViewData["Title"] = "Customers";
+}
+<!-- Add pagination and search by atributes -->
+<div class="text-center">
+    <h1 class="display-4 mb-4">Customers</h1>
+    <form class="text-left">
+        <div class="form-row">
+            <div class="form-group col-md-11">
+                <label>Search</label>
+                <input type="email" class="form-control" placeholder="Search by key word">
+            </div>
+            <div class="form-group col-md-1">
+                <button type="submit" class="btn btn-primary w-100" style=" margin-top: 32px; height: 37px">Search</button>
+            </div>
+        </div>
+    </form>
+    <div class="mb-2">
+        <table class="table table-bordered table-hover bg-white mb-0">
+            <thead>
+                <tr>
+                    <th scope="col">Id</th>
+                    <th scope="col">Name</th>
+                    <th scope="col">Email</th>
+                    <th scope="col">Phone</th>
+                </tr>
+            </thead>
+            <tbody id="myTable">
+                @foreach (var employee in Model)
+                {
+                    <tr>
+                        <td>@employee.Id</td>
+                        <td>@employee.FullName</td>
+                        <td>@employee.Email</td>
+                        <td>@employee.Phone</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <a type="button" class="btn btn-primary mb-2" style="width:130px" asp-controller="Customers" asp-action="Create">Create</a>
+</div>
+
+@section Scripts
+{
+    <script>
+        $("tr").click(function () {
+            var id = $('td:first', this).text();
+            window.location.href = '/Customers/' + id;
+        });
+
+        $(document).ready(function () {
+            $("#myInput").on("keyup", function () {
+                var value = $(this).val().toLowerCase();
+                $("#myTable tr").filter(function () {
+                    $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+                });
+            });
+        });
+    </script>
+}

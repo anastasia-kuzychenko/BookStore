@@ -1,0 +1,105 @@
+﻿@model BookStore.Models.Book
+
+<div class="text-center">
+    <h1 class="display-4 mb-4">Edit Book</h1>
+</div>
+
+
+<form method="post" class="needs-validation" novalidate>
+    <div class="form-row">
+        <div class="form-group col-md-6">
+            <label>Name</label>
+            <input type="text" class="form-control" asp-for="Name" placeholder="Enter book name">
+            <div class="invalid-feedback">
+                <span asp-validation-for="Name"></span>
+            </div>
+        </div>
+        <div class="form-group col-md-6">
+            <label for="inputState">Author</label>
+            <select asp-for="AuthorId" asp-items="ViewBag.Authors" class="selectpicker form-control" data-live-search="true" required>
+                <option selected="selected" value="">Select ...</option>
+            </select>
+            <div class="invalid-feedback">
+                <span asp-validation-for="AuthorId"></span>
+            </div>
+        </div>
+    </div>
+    <div class="form-row">
+        <div class="form-group col-md-6">
+            <label>Publisher</label>
+            <input type="text" class="form-control" asp-for="Publisher" placeholder="Enter publisher name">
+            <div class="invalid-feedback">
+                <span asp-validation-for="Publisher"></span>
+            </div>
+        </div>
+        <div class="form-group col-md-3">
+            <label>Revision number</label>
+            <input type="number" class="form-control" asp-for="RevisionNumber" placeholder="Enter number of revision">
+            <div class="invalid-feedback">
+                <span asp-validation-for="RevisionNumber"></span>
+            </div>
+        </div>
+        <div class="form-group col-md-3">
+            <label>Date</label>
+            <input type="date" class="form-control" asp-for="Date">
+            <div class="invalid-feedback">
+                <span asp-validation-for="Date"></span>
+            </div>
+        </div>
+    </div>
+    <div class="form-row">
+        <div class="form-group col-md-4">
+            <label>Prise</label>
+            <div class="input-group">
+                <input type="number" class="form-control" asp-for="Prise" placeholder="Enter book prise">
+                <div class="input-group-append">
+                    <span class="input-group-text">$</span>
+                </div>
+                <div class="invalid-feedback">
+                    <span asp-validation-for="Prise"></span>
+                </div>
+            </div>
+        </div>
+        <div class="form-group col-md-4">
+            <label>Retail prise</label>
+            <div class="input-group">
+                <input type="number" class="form-control" asp-for="RecommendedPrise" placeholder="Enter retail book prise">
+                <div class="input-group-append">
+                    <span class="input-group-text">$</span>
+                </div>
+                <div class="invalid-feedback">
+                    <span asp-validation-for="RecommendedPrise"></span>
+                </div>
+            </div>
+        </div>
+        <div class="form-group col-md-4">
+            <label>Condition assessment</label>
+            <input type="text" class="form-control" asp-for="Assessment" placeholder="Enter condition assessment">
+            <div class="invalid-feedback">
+                <span asp-validation-for="Assessment"></span>
+            </div>
+        </div>
+    </div>
+    <div class="form-group">
+        <label>Description</label>
+        <textarea type="text" class="form-control" asp-for="Description" placeholder="Enter book description"></textarea>
+        <div class="invalid-feedback">
+            <span asp-validation-for="Description"></span>
+        </div>
+    </div>
+    <button type="submit" class="btn btn-primary">Save</button>
+    <a class="btn btn-danger" href="javascript:void(0);" onclick="history.go(-1);">Cancel</a>
+</form>
+
+@section Scripts
+{
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        var settings = {
+            validClass: "is-valid",
+            errorClass: "is-invalid"
+        };
+        $.validator.setDefaults(settings);
+        $.validator.unobtrusive.options = settings;
+    </script>
+}   

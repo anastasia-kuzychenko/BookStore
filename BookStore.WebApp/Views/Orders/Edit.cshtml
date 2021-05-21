@@ -1,0 +1,99 @@
+﻿@model BookStore.Models.Order
+@{
+    ViewData["Title"] = "Edit order";
+}
+
+<div class="text-center">
+    <h1 class="display-4 mb-4">Edit Order</h1>
+</div>
+
+<form method="post" class="needs-validation" novalidate>
+    <div class="form-row">
+        <div class="form-group col-md-4">
+            <label for="inputState">Book</label>
+            <select asp-for="BookId" asp-items="ViewBag.Books" class="selectpicker form-control" data-live-search="true" required>
+                <option selected="selected" value="">Select ...</option>
+            </select>
+            <div class="invalid-feedback">
+                <span asp-validation-for="BookId"></span>
+            </div>
+        </div>
+        <div class="form-group col-md-4">
+            <label for="inputState">Employee</label>
+            <select asp-for="EmployeeId" asp-items="ViewBag.Employees" class="selectpicker form-control" data-live-search="true" required>
+                <option selected="selected" value="">Select ...</option>
+            </select>
+            <div class="invalid-feedback">
+                <span asp-validation-for="EmployeeId"></span>
+            </div>
+        </div>
+        <div class="form-group col-md-4">
+            <label for="inputState">Customer</label>
+            <select asp-for="CustomerId" asp-items="ViewBag.Customers" class="selectpicker form-control" data-live-search="true" required>
+                <option selected="selected" value="">Select ...</option>
+            </select>
+            <div class="invalid-feedback">
+                <span asp-validation-for="CustomerId"></span>
+            </div>
+        </div>
+    </div>
+    <div class="form-row">
+        <div class="form-group col-md-6">
+            <label>Book Count</label>
+            <input type="number" class="form-control" asp-for="BookCount" placeholder="Enter book count" required>
+            <div class="invalid-feedback">
+                <span asp-validation-for="BookCount"></span>
+            </div>
+        </div>
+        <div class="form-group col-md-3">
+            <label>Payment type</label>
+            <select class="custom-select" asp-for="PaymentType" asp-items="Html.GetEnumSelectList<BookStore.Models.PaymentType>()">
+                <option selected="selected" value="">Select ...</option>
+            </select>
+            <div class="invalid-feedback">
+                <span asp-validation-for="PaymentType"></span>
+            </div>
+        </div>
+        <div class="form-group col-md-3">
+            <label>Staate</label>
+            <select class="custom-select" asp-for="State" asp-items="Html.GetEnumSelectList<BookStore.Models.OrderState>()">
+                <option selected="selected" value="">Select ...</option>
+            </select>
+            <div class="invalid-feedback">
+                <span asp-validation-for="State"></span>
+            </div>
+        </div>
+    </div>
+    <div class="form-row">
+        <div class="form-group col-md-6">
+            <label>Order Date</label>
+            <input type="date" class="form-control" asp-for="OrderDate" required>
+            <div class="invalid-feedback">
+                <span asp-validation-for="OrderDate"></span>
+            </div>
+        </div>
+        <div class="form-group col-md-6">
+            <label>Delivery Date</label>
+            <input type="date" class="form-control" asp-for="DeliveryDate" required>
+            <div class="invalid-feedback">
+                <span asp-validation-for="DeliveryDate"></span>
+            </div>
+        </div>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Save</button>
+    <a class="btn btn-danger" href="javascript:void(0);" onclick="history.go(-1);">Cancel</a>
+</form>
+
+@section Scripts
+{
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        var settings = {
+            validClass: "is-valid",
+            errorClass: "is-invalid"
+        };
+        $.validator.setDefaults(settings);
+        $.validator.unobtrusive.options = settings;
+    </script>
+}   

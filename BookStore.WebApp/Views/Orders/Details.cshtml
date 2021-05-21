@@ -1,0 +1,84 @@
+﻿@model BookStore.Models.Order
+@{
+    ViewData["Title"] = "Order";
+    ViewData["DeleteLable"] = $"order";
+    ViewData["Controller"] = "Orders";
+    var classState = Model.State switch
+    {
+        BookStore.Models.OrderState.ToSend => "secondary",
+        BookStore.Models.OrderState.Sended => "warning",
+        BookStore.Models.OrderState.SelfReceived => "success",
+        BookStore.Models.OrderState.Received => "success",
+    };
+}
+
+<p>Id: @Model.Id</p>
+<div class="d-flex align-content-between mb-4">
+    <h1 class="flex-fill display-4">Order</h1>
+    <div class="d-flex">
+        <div class="mr-2">
+            <a asp-controller="Orders" asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary mt-2">Edit</a>
+        </div>
+        <div>
+            <button type="button" class="btn btn-danger mt-2" data-toggle="modal" data-target="#delete">Delete</button>
+            @await Html.PartialAsync("~/Views/Shared/_ConfirmDelete.cshtml", Model, ViewData)
+        </div>
+    </div>
+</div>
+<hr class="mb-4" />
+<div class="row mb-4">
+    <div class="col-6">
+        <div class="d-flex">
+            <div class="mr-5" style="font-size:200px">&#128230;</div>
+            <div>
+                <h4 class="mb-4">Attributes</h4>
+                <div class="font-italic">
+                    <p>Order date: @Model.OrderDate.ToString("dd.MM.yyyy")</p>
+                    <p>Deliveri date: @Model.DeliveryDate.ToString("dd.MM.yyyy")</p>
+                    <p>Book count: @Model.BookCount</p>
+                    <p>Payment type: @Model.PaymentType</p>
+                    <p>State: <span class="badge badge-@classState badge-pill">@Model.State</span></p>
+                    <p class="font-weight-bold">Sum: @Model.Sum$</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-6 ">
+        <h4 class="mb-4">Book</h4>
+        <div class="card">
+            <div class="card-body">
+                <a asp-controller="Books" asp-action="Details" asp-route-id="@Model.Book.Id">
+                    <h4 class="card-title">"@Model.Book.Name" - @Model.Book.Author.FullName</h4>
+                </a>
+                <small class="text-muted">@Model.Book.Prise$</small>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-6">
+        <h4 class="mb-4">Employee</h4>
+        <div class="card">
+            <div class="card-body">
+                <a asp-controller="Employees" asp-action="Details" asp-route-id="@Model.Employee.Id">
+                    <h4 class="card-title">@Model.Employee.FullName</h4>
+                </a>
+                <small class="text-muted">Phone:     @Model.Employee.Phone</small>
+            </div>
+        </div>
+    </div>
+    <div class="col-6">
+        <h4 class="mb-4">Customer</h4>
+        <div class="card">
+            <div class="card-body">
+                <a asp-controller="Customers" asp-action="Details" asp-route-id="@Model.Customer.Id">
+                    <h4 class="card-title">@Model.Customer.FullName</h4>
+                </a>
+                <small class="text-muted">Email: @Model.Customer.Email</small> <br />
+                <small class="text-muted">Phone: @Model.Customer.Phone</small>
+            </div>
+        </div>
+    </div>
+</div>
+

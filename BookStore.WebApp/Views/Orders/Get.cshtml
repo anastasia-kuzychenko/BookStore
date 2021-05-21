@@ -1,0 +1,120 @@
+﻿@model IEnumerable<BookStore.Models.Order>
+@{
+    ViewData["Title"] = "Orders";
+}
+<div class="text-center">
+    <h1 class="display-4 mb-4">Orders</h1>
+    <form class="text-left">
+        <div class="form-row">
+            <div class="form-group col-md-3">
+                <label>Search</label>
+                <input type="email" class="form-control" placeholder="Search by key word">
+            </div>
+            <div class="form-group col-md-2">
+                <label>Payment type</label>
+                <select class="custom-select">
+                    <option selected>Select...</option>
+                    <option value="1">15</option>
+                </select>
+            </div>
+            <div class="form-group col-md-2">
+                <label>State</label>
+                <select class="custom-select">
+                    <option selected>Select...</option>
+                    <option value="1">15</option>
+                </select>
+            </div>
+            <div class="form-group col-md-2">
+                <label>Sum min</label>
+                <input type="number" class="form-control" placeholder="Enter min prise">
+            </div>
+            <div class="form-group col-md-2">
+                <label>Sum max</label>
+                <input type="number" class="form-control" placeholder="Enter max prise">
+            </div>
+            <div class="form-group col-md-1">
+                <button type="submit" class="btn btn-primary w-100" style=" margin-top: 32px; height: 37px">Search</button>
+            </div>
+        </div>
+    </form>
+
+    <div class="mb-2" style="overflow-x: scroll; width: 100%">
+        <table class="table table-bordered table-hover bg-white mb-0" style="width: 1500px">
+            <thead>
+                <tr>
+                    <th scope="col">Id</th>
+                    <th scope="col">Book</th>
+                    <th scope="col">Employee</th>
+                    <th scope="col">Customer</th>
+                    <th scope="col">Book Count</th>
+                    <th scope="col">Sum</th>
+                    <th scope="col">Order Date</th>
+                    <th scope="col">Delivery Date</th>
+                    <th scope="col">Payment Type</th>
+                    <th scope="col">State</th>
+                </tr>
+            </thead>
+            <tbody id="myTable">
+                @foreach (var order in Model)
+                {
+                    <tr>
+                        <td>@order.Id</td>
+                        <td><a asp-controller="Books" asp-action="Details" asp-route-id="@order.Book.Id">@order.Book.Name</a></td>
+                        <td><a asp-controller="Employees" asp-action="Details" asp-route-id="@order.Employee.Id">@order.Employee.FullName</a></td>
+                        <td><a asp-controller="Customers" asp-action="Details" asp-route-id="@order.Customer.Id">@order.Customer.FullName</a></td>
+                        <td>@order.BookCount</td>
+                        <td>@order.Sum$</td>
+                        <td>@order.OrderDate.ToString("dd/MM/yyyy")</td>
+                        <td>@order.DeliveryDate.ToString("dd/MM/yyyy")</td>
+                        <td>@order.PaymentType</td>
+                        <td>@order.State</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <div class="row">
+        <div class="col-sm d-flex justify-content-start">
+            <select class="custom-select custom-select-sm mb-0" style="width: 60px">
+                <option selected>10</option>
+                <option value="1">15</option>
+            </select>
+        </div>
+        <div class="col-sm">
+            <p class="text-muted text-nowrap mb-0 mr-4">Page 1 of 20</p>
+        </div>
+        <div class="col-sm d-flex justify-content-end">
+            <div class="btn-group">
+                <button type="button" class="btn btn-sm btn-primary"><</button>
+                <button type="button" class="btn btn-sm btn-primary">1</button>
+                <button type="button" class="btn btn-sm btn-primary">2</button>
+                <button type="button" class="btn btn-sm btn-primary">3</button>
+                <button type="button" class="btn btn-sm btn-primary">4</button>
+                <button type="button" class="btn btn-sm btn-primary">...</button>
+                <button type="button" class="btn btn-sm btn-primary">></button>
+            </div>
+        </div>
+    </div>
+
+    <a type="button" class="btn btn-primary mt-5 mb-2" style="width:130px" asp-controller="Orders" asp-action="Create">Create</a>
+</div>
+
+@section Scripts
+{
+    <script>
+        $("tr").click(function () {
+            var id = $('td:first', this).text();
+            window.location.href = '/Orders/' + id;
+        });
+
+        $(document).ready(function () {
+            $("#myInput").on("keyup", function () {
+                var value = $(this).val().toLowerCase();
+                $("#myTable tr").filter(function () {
+                    $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+                });
+            });
+        });
+    </script>
+}

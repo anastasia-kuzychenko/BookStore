@@ -1,33 +1,82 @@
-﻿@model IEnumerable<BookStore.Models.Employee>
+﻿@model BookStore.Services.DTOs.PaginatedListDTO<BookStore.Models.Employee>
 @{
     ViewData["Title"] = "Employees";
 }
-<!-- Add pagination and search by atributes -->
+
 <div class="text-center">
-    <h1 class="display-4 mb-4">Employees</h1>
+    <!--Head-->
+    <h1 class="display-4 mb-4">
+        Employees
+        <!--Create-->
+        <a asp-controller="Employees" asp-action="Create"><i class="bi bi-person-plus"></i></a>
+    </h1>
+    <!--Search-->
     <form class="text-left">
         <div class="form-row">
             <div class="form-group col-md-11">
                 <label>Search</label>
-                <input type="email" class="form-control" placeholder="Search by key word">
+                <input id="search-input" class="form-control" placeholder="Search by key word" value="@ViewBag.KeyWord">
             </div>
             <div class="form-group col-md-1">
-                <button type="submit" class="btn btn-primary w-100" style=" margin-top: 32px; height: 37px">Search</button>
+                <a id="search-btn" class="btn btn-primary text-white w-100" style=" margin-top: 32px; height: 37px">Search</a>
             </div>
         </div>
     </form>
+    <!--Table-->
     <div class="mb-2">
         <table class="table table-bordered table-hover bg-white mb-0">
+            <!--Table head-->
             <thead>
                 <tr>
                     <th scope="col">Id</th>
-                    <th scope="col">Name</th>
-                    <th scope="col">Position</th>
+                    <th scope="col">
+                        Name
+                        @if (ViewBag.CurrentSort == "FullName")
+                        {
+                            <a class="text-muted" asp-controller="Employees" asp-action="Get"><i class="bi bi-funnel-fill"></i></a>
+                        }
+                        else
+                        {
+                            <a class="text-muted" asp-controller="Employees" asp-action="Get" asp-route-sortOrder="FullName"><i class="bi bi-funnel"></i></a>
+                        }
+                    </th>
+                    <th scope="col">
+                        Position
+                        @if (ViewBag.CurrentSort == "Position")
+                        {
+                            <a class="text-muted" asp-controller="Employees" asp-action="Get"><i class="bi bi-funnel-fill"></i></a>
+                        }
+                        else
+                        {
+                            <a class="text-muted" asp-controller="Employees" asp-action="Get" asp-route-sortOrder="Position"><i class="bi bi-funnel"></i></a>
+                        }
+                    </th>
                     <th scope="col">Phone</th>
-                    <th scope="col">Birthday</th>
-                    <th scope="col">First Day</th>
+                    <th scope="col">
+                        Birthday
+                        @if (ViewBag.CurrentSort == "Birthday")
+                        {
+                            <a class="text-muted" asp-controller="Employees" asp-action="Get"><i class="bi bi-funnel-fill"></i></a>
+                        }
+                        else
+                        {
+                            <a class="text-muted" asp-controller="Employees" asp-action="Get" asp-route-sortOrder="Birthday"><i class="bi bi-funnel"></i></a>
+                        }
+                    </th>
+                    <th scope="col">
+                        First Day
+                        @if (ViewBag.CurrentSort == "FirstDay")
+                        {
+                            <a class="text-muted" asp-controller="Employees" asp-action="Get"><i class="bi bi-funnel-fill"></i></a>
+                        }
+                        else
+                        {
+                            <a class="text-muted" asp-controller="Employees" asp-action="Get" asp-route-sortOrder="FirstDay"><i class="bi bi-funnel"></i></a>
+                        }
+                    </th>
                 </tr>
             </thead>
+            <!--Table body-->
             <tbody id="myTable">
                 @foreach (var employee in Model)
                 {
@@ -43,46 +92,66 @@
             </tbody>
         </table>
     </div>
-
+    <!--Pagination-->
     <div class="row mb-5">
+        <!--Page size-->
         <div class="col-sm d-flex justify-content-start">
             <select class="custom-select custom-select-sm mb-0" style="width: 60px">
                 <option selected>10</option>
                 <option value="1">15</option>
             </select>
         </div>
+        <!--Page index and count-->
         <div class="col-sm">
-            <p class="text-muted text-nowrap mb-0 mr-4">Page 1 of 20</p>
+            <p class="text-muted text-nowrap mb-0 mr-4">Page @Model.PageIndex of @Model.TotalPages</p>
         </div>
-        <div class="col-sm d-flex justify-content-end">
-            <a href="#" class="text-secondary mr-3"><</a>
-            <a href="#" class="text-secondary mr-3">1</a>
-            <a href="#" class="text-secondary mr-3">2</a>
-            <a href="#" class="text-secondary mr-3">3</a>
-            <a href="#" class="text-secondary mr-3">4</a>
-            <a href="#" class="text-secondary mr-3">...</a>
-            <a href="#" class="text-secondary mr-3">></a>
+        <!--Pages numbers-->
+        <div id="pages-list" class="col-sm d-flex justify-content-end">
+            <div class="btn-group">
+                @if (Model.HasPreviousPage)
+                {
+                    var prev = Model.PageIndex - 1;
+                    <button class="btn btn-sm btn-primary" value="@prev"><i class="bi bi-arrow-left-short"></i></button>
+                }
+                @for (int i = 1; i <= Model.TotalPages; i++)
+                {
+                    var btnClass = "";
+                    @if (Model.PageIndex == i)
+                    {
+                        btnClass = "active";
+                    }
+                    <button class="btn btn-sm btn-primary @btnClass" value="@i">@i</button>
+                }
+                @if (Model.HasNextPage)
+                {
+                    var next = Model.PageIndex + 1;
+                    <button class="btn btn-sm btn-primary" value="@next"><i class="bi bi-arrow-right-short"></i></button>
+                }
+            </div>
         </div>
     </div>
-
-    <a type="button" class="btn btn-primary mb-2" style="width:130px" asp-controller="Employees" asp-action="Create">Create</a>
 </div>
 
 @section Scripts
 {
     <script>
-        $("tr").click(function () {
-            var id = $('td:first', this).text();
-            window.location.href = '/Employees/' + id;
+        function getQuery() {
+            var keyWord = $("#search-input").val() ?? "";
+            return "keyWord=" + encodeURIComponent(keyWord) + "&sortOrder=" + "@ViewBag.CurrentSort"
+        }
+
+        $("#search-btn").click(() => {
+            window.location.href = "/Employees/?" + getQuery();
+        })
+
+        $("#pages-list").on("click", "button", function () {
+            var index = $(this).val();
+            window.location.href = '/Employees/?pageNumber=' + index + '&' + getQuery();
         });
 
-        $(document).ready(function () {
-            $("#myInput").on("keyup", function () {
-                var value = $(this).val().toLowerCase();
-                $("#myTable tr").filter(function () {
-                    $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
-                });
-            });
+        $("tbody").on("click", "tr", function () {
+            var id = $('td:first', this).text();
+            window.location.href = '/Employees/' + id;
         });
     </script>
 }

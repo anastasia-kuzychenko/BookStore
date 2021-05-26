@@ -1,9 +1,11 @@
 ﻿using BookStore.Data;
 using BookStore.Models;
+using BookStore.Services.DTOs;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 
 namespace BookStore.Services.Implementations
@@ -40,9 +42,25 @@ namespace BookStore.Services.Implementations
             await _unitOfWork.Commit();
         }
 
-        public async Task<IEnumerable<Customer>> Get()
+        public async Task<PaginatedListDTO<Customer>> Get(string sortOrder, string keyWord, int? pageNumber)
         {
-            return await _unitOfWork.Customers.Get();
+            Expression<Func<Customer, bool>> filter = keyWord == null ? x => true :
+               x => x.Id.ToString().Contains(keyWord)
+                || x.Name.Contains(keyWord)
+                || x.Surname.Contains(keyWord)
+                || x.Email.Contains(keyWord)
+                || x.Phone.Contains(keyWord);
+
+            Expression<Func<Customer, object>> sort =
+                sortOrder switch
+                {
+                    "FullName" => x => x.Name,
+                    _ => x => x
+                };
+
+            var list = _unitOfWork.Customers.Queryable.Where(filter).OrderBy(sort);
+
+            return await PaginatedListDTO<Customer>.CreateAsync(list, pageNumber ?? 1, 10);
         }
 
         public async Task<Customer> GetById(Guid id)

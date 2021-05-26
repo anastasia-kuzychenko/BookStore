@@ -11,18 +11,6 @@ using System.Threading.Tasks;
     - authorization
  */
 
-/*
- DONE
-    - implement home page methods
-    - include db store
-    - implement validation
-    - implement order details
-    - implement editing of all entities
-    - implement deletion of all entities
-    - implement creation book with author
-    - implement order creation with autho compleat books employees and customers
- */
-
 namespace BookStore.WebApp.Controllers
 {
     public class HomeController : Controller

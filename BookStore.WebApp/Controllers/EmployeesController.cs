@@ -17,9 +17,12 @@ namespace BookStore.WebApp.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Get()
+        public async Task<IActionResult> Get(string sortOrder, string keyWord, int? pageNumber)
         {
-            var model = await _employeesService.Get();
+            ViewBag.CurrentSort = sortOrder;
+            ViewBag.KeyWord = keyWord;
+
+            var model = await _employeesService.Get(sortOrder, keyWord, pageNumber);
             return View(model);
         }
 

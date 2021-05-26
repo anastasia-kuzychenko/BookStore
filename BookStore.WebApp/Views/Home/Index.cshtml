@@ -45,7 +45,14 @@
             <div class="list-group">
                 @foreach (var employee in Model.Employees)
                 {
-                    <a asp-controller="Employees" asp-action="Details" asp-route-id="@employee.Id" class="list-group-item list-group-item-action">@employee.FullName</a>
+                    <a asp-controller="Employees" asp-action="Details" asp-route-id="@employee.Id"
+                       class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                        @employee.FullName
+                        <span>
+                            <span style="font-size:10px" class="text-muted">Total orders sum:</span>
+                            <span class="badge badge-primary badge-pill ml-1">@employee.Orders.Sum(x => x.Sum)$</span>
+                        </span>
+                    </a>
                 }
             </div>
         </div>
@@ -54,7 +61,14 @@
             <div class="list-group">
                 @foreach (var customer in Model.Customers)
                 {
-                    <a asp-controller="Customers" asp-action="Details" asp-route-id="@customer.Id" class="list-group-item list-group-item-action">@customer.Name</a>
+                    <a asp-controller="Customers" asp-action="Details" asp-route-id="@customer.Id"
+                       class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                        @customer.Name
+                        <span>
+                            <span style="font-size:10px" class="text-muted">Total orders sum:</span>
+                            <span class="badge badge-primary badge-pill ml-1">@customer.Orders.Sum(x => x.Sum)$</span>
+                        </span>
+                    </a>
                 }
             </div>
         </div>
@@ -66,7 +80,25 @@
             <div class="list-group">
                 @foreach (var employee in Model.NewEmployees)
                 {
-                    <a asp-controller="Employees" asp-action="Details" asp-route-id="@employee.Id" class="list-group-item list-group-item-action">@employee.FullName</a>
+                    <a asp-controller="Employees" asp-action="Details" asp-route-id="@employee.Id"
+                       class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+
+                        <span>
+                            @employee.FullName
+                            <span style="font-size:10px" class="text-muted">
+                                |
+                                <span class="text-muted font-italic">
+                                    @employee.Position
+                                </span>
+                            </span>
+                        </span>
+                        <span>
+                            <span style="font-size:10px" class="text-muted">First date:</span>
+                            <span class="badge badge-dark badge-pill ml-1">
+                                @employee.FirstDay.ToString("ddd, dd MMM", new System.Globalization.CultureInfo("en-US"))
+                            </span>
+                        </span>
+                    </a>
                 }
             </div>
         </div>
@@ -75,7 +107,15 @@
             <div class="list-group">
                 @foreach (var employee in Model.BirthdayEmployees)
                 {
-                    <a asp-controller="Employees" asp-action="Details" asp-route-id="@employee.Id" class="list-group-item list-group-item-action">@employee.FullName</a>
+                    <a asp-controller="Employees" asp-action="Details" asp-route-id="@employee.Id" class="list-group-item list-group-item-action">
+                        @employee.FullName
+                        <span style="font-size:10px" class="text-muted">
+                            Position:
+                            <span class="text-muted font-italic">
+                                @employee.Position
+                            </span>
+                        </span>
+                    </a>
                 }
             </div>
         </div>

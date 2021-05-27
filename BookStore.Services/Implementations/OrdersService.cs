@@ -1,9 +1,11 @@
 ﻿using BookStore.Data;
 using BookStore.Models;
+using BookStore.Services.DTOs;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 
 namespace BookStore.Services.Implementations
@@ -40,9 +42,40 @@ namespace BookStore.Services.Implementations
             await _unitOfWork.Commit();
         }
 
-        public async Task<IEnumerable<Order>> Get()
+        public async Task<PaginatedListDTO<Order>> Get(
+            string sortOrder, 
+            string keyWord, 
+            PaymentType? paymentType, 
+            OrderState? orderState, 
+            decimal? minSum, 
+            decimal? maxSum, 
+            int? pageNumber)
         {
-            return await _unitOfWork.Orders.Get();
+            Expression<Func<Order, bool>> filter = x =>
+                x.BookCount * x.Book.Prise >= (minSum ?? 0)
+                && x.BookCount * x.Book.Prise <= (maxSum ?? 100000)
+                && (x.PaymentType == paymentType || paymentType == null)
+                && (x.State == orderState || orderState == null)
+                && (x.Id.ToString().Contains(keyWord ?? "")
+                || x.Book.Name.Contains(keyWord ?? "")
+                || x.Employee.Name.Contains(keyWord ?? "")
+                || x.Customer.Name.Contains(keyWord ?? "")
+                );
+
+            Expression<Func<Order, object>> sort =
+                sortOrder switch
+                {
+                    "Book.Name" => x => x.Book.Name,
+                    "Employee.Name" => x => x.Employee.Name,
+                    "Customer.Name" => x => x.Book.Name,
+                    "DeliveryDate" => x => x.DeliveryDate,
+                    "OrderDate" => x => x.OrderDate,
+                    _ => x => x
+                };
+
+            var list = _unitOfWork.Orders.Queryable.Where(filter).OrderBy(sort);
+
+            return await PaginatedListDTO<Order>.CreateAsync(list, pageNumber ?? 1, 10);
         }
 
         public async Task<Order> GetById(Guid id)

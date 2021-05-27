@@ -1,9 +1,11 @@
 ﻿using BookStore.Data;
 using BookStore.Models;
+using BookStore.Services.DTOs;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 
 namespace BookStore.Services.Implementations
@@ -40,9 +42,30 @@ namespace BookStore.Services.Implementations
             await _unitOfWork.Commit();
         }
 
-        public async Task<IEnumerable<Book>> Get()
+        public async Task<PaginatedListDTO<Book>> Get(string sortOrder, string keyWord, decimal? minPrise, decimal? maxPrise, int? pageNumber)
         {
-            return await _unitOfWork.Books.Get();
+            Expression<Func<Book, bool>> filter = x => 
+                x.Prise >= (minPrise ?? 0) 
+                && x.Prise <= (maxPrise ?? 100000)
+                && (x.Id.ToString().Contains(keyWord ?? "")
+                || x.Name.Contains(keyWord ?? "")
+                || x.Publisher.Contains(keyWord ?? "")
+                || x.Assessment.Contains(keyWord ?? "")
+                || x.Author.Name.Contains(keyWord ?? ""));
+
+            Expression <Func<Book, object>> sort =
+                sortOrder switch
+                {
+                    "Name" => x => x.Name,
+                    "Prise" => x => x.Prise,
+                    "Date" => x => x.Date,
+                    "Author.Name" => x => x.Author.Name,
+                    _ => x => x
+                };
+
+            var list = _unitOfWork.Books.Queryable.Where(filter).OrderBy(sort);
+
+            return await PaginatedListDTO<Book>.CreateAsync(list, pageNumber ?? 1, 10);
         }
 
         public async Task<Book> GetById(Guid id)

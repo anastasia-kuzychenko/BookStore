@@ -1,59 +1,117 @@
-﻿@model IEnumerable<BookStore.Models.Order>
+﻿@model BookStore.Services.DTOs.PaginatedListDTO<BookStore.Models.Order>
 @{
     ViewData["Title"] = "Orders";
+    var paymentType = ViewBag.PaymentType;
+    var state = ViewBag.State;
 }
 <div class="text-center">
-    <h1 class="display-4 mb-4">Orders</h1>
+    <!--Head-->
+    <h1 class="display-4 mb-4">
+        Orders
+        <!--Create-->
+        <a asp-controller="Orders" asp-action="Create"><i class="bi bi-cart-plus"></i></a>
+    </h1>
+    <!--Search-->
     <form class="text-left">
         <div class="form-row">
             <div class="form-group col-md-3">
                 <label>Search</label>
-                <input type="email" class="form-control" placeholder="Search by key word">
+                <input id="search-input" type="text" class="form-control" placeholder="Search by key word" value="@ViewBag.KeyWord">
             </div>
             <div class="form-group col-md-2">
                 <label>Payment type</label>
-                <select class="custom-select">
-                    <option selected>Select...</option>
-                    <option value="1">15</option>
+                <select id="payment-type-input" class="custom-select" asp-for="@paymentType" asp-items="Html.GetEnumSelectList<BookStore.Models.PaymentType>()">
+                    <option selected="selected" value="">Select ...</option>
                 </select>
             </div>
             <div class="form-group col-md-2">
                 <label>State</label>
-                <select class="custom-select">
-                    <option selected>Select...</option>
-                    <option value="1">15</option>
+                <select id="state-input" class="custom-select" asp-for="@state" asp-items="Html.GetEnumSelectList<BookStore.Models.OrderState>()">
+                    <option selected="selected" value="">Select ...</option>
                 </select>
             </div>
             <div class="form-group col-md-2">
                 <label>Sum min</label>
-                <input type="number" class="form-control" placeholder="Enter min prise">
+                <input id="min-sum-input" type="number" class="form-control" placeholder="Enter min sum" value="@ViewBag.MinSum">
             </div>
             <div class="form-group col-md-2">
                 <label>Sum max</label>
-                <input type="number" class="form-control" placeholder="Enter max prise">
+                <input id="max-sum-input" type="number" class="form-control" placeholder="Enter max sum" value="@ViewBag.MaxSum">
             </div>
             <div class="form-group col-md-1">
-                <button type="submit" class="btn btn-primary w-100" style=" margin-top: 32px; height: 37px">Search</button>
+                <button type="button" id="search-btn" class="btn btn-primary w-100" style=" margin-top: 32px; height: 37px">Search</button>
             </div>
         </div>
     </form>
-
+    <!--Table-->
     <div class="mb-2" style="overflow-x: scroll; width: 100%">
         <table class="table table-bordered table-hover bg-white mb-0" style="width: 1500px">
+            <!--Table head-->
             <thead>
                 <tr>
                     <th scope="col">Id</th>
-                    <th scope="col">Book</th>
-                    <th scope="col">Employee</th>
-                    <th scope="col">Customer</th>
+                    <th scope="col">
+                        Book
+                        @if (ViewBag.CurrentSort == "Book.Name")
+                        {
+                            <a class="text-muted" asp-controller="Orders" asp-action="Get"><i class="bi bi-funnel-fill"></i></a>
+                        }
+                        else
+                        {
+                            <a class="text-muted" asp-controller="Orders" asp-action="Get" asp-route-sortOrder="Book.Name"><i class="bi bi-funnel"></i></a>
+                        }
+                    </th>
+                    <th scope="col">
+                        Employee
+                        @if (ViewBag.CurrentSort == "Employee.Name")
+                        {
+                            <a class="text-muted" asp-controller="Orders" asp-action="Get"><i class="bi bi-funnel-fill"></i></a>
+                        }
+                        else
+                        {
+                            <a class="text-muted" asp-controller="Orders" asp-action="Get" asp-route-sortOrder="Employee.Name"><i class="bi bi-funnel"></i></a>
+                        }
+                    </th>
+                    <th scope="col">
+                        Customer
+                        @if (ViewBag.CurrentSort == "Customer.Name")
+                        {
+                            <a class="text-muted" asp-controller="Orders" asp-action="Get"><i class="bi bi-funnel-fill"></i></a>
+                        }
+                        else
+                        {
+                            <a class="text-muted" asp-controller="Orders" asp-action="Get" asp-route-sortOrder="Customer.Name"><i class="bi bi-funnel"></i></a>
+                        }
+                    </th>
                     <th scope="col">Book Count</th>
                     <th scope="col">Sum</th>
-                    <th scope="col">Order Date</th>
-                    <th scope="col">Delivery Date</th>
+                    <th scope="col">
+                        Order Date
+                        @if (ViewBag.CurrentSort == "OrderDate")
+                        {
+                            <a class="text-muted" asp-controller="Orders" asp-action="Get"><i class="bi bi-funnel-fill"></i></a>
+                        }
+                        else
+                        {
+                            <a class="text-muted" asp-controller="Orders" asp-action="Get" asp-route-sortOrder="OrderDate"><i class="bi bi-funnel"></i></a>
+                        }
+                    </th>
+                    <th scope="col">
+                        Delivery Date
+                        @if (ViewBag.CurrentSort == "DeliveryDate")
+                        {
+                            <a class="text-muted" asp-controller="Orders" asp-action="Get"><i class="bi bi-funnel-fill"></i></a>
+                        }
+                        else
+                        {
+                            <a class="text-muted" asp-controller="Orders" asp-action="Get" asp-route-sortOrder="DeliveryDate"><i class="bi bi-funnel"></i></a>
+                        }
+                    </th>
                     <th scope="col">Payment Type</th>
                     <th scope="col">State</th>
                 </tr>
             </thead>
+            <!--Table body-->
             <tbody id="myTable">
                 @foreach (var order in Model)
                 {
@@ -73,48 +131,75 @@
             </tbody>
         </table>
     </div>
-
-    <div class="row">
+    <!--Pagination-->
+    <div class="row mb-5">
+        <!--Page size-->
         <div class="col-sm d-flex justify-content-start">
             <select class="custom-select custom-select-sm mb-0" style="width: 60px">
                 <option selected>10</option>
                 <option value="1">15</option>
             </select>
         </div>
+        <!--Page index and count-->
         <div class="col-sm">
-            <p class="text-muted text-nowrap mb-0 mr-4">Page 1 of 20</p>
+            <p class="text-muted text-nowrap mb-0 mr-4">Page @Model.PageIndex of @Model.TotalPages</p>
         </div>
-        <div class="col-sm d-flex justify-content-end">
+        <!--Pages numbers-->
+        <div id="pages-list" class="col-sm d-flex justify-content-end">
             <div class="btn-group">
-                <button type="button" class="btn btn-sm btn-primary"><</button>
-                <button type="button" class="btn btn-sm btn-primary">1</button>
-                <button type="button" class="btn btn-sm btn-primary">2</button>
-                <button type="button" class="btn btn-sm btn-primary">3</button>
-                <button type="button" class="btn btn-sm btn-primary">4</button>
-                <button type="button" class="btn btn-sm btn-primary">...</button>
-                <button type="button" class="btn btn-sm btn-primary">></button>
+                @if (Model.HasPreviousPage)
+                {
+                    var prev = Model.PageIndex - 1;
+                    <button class="btn btn-sm btn-primary" value="@prev"><i class="bi bi-arrow-left-short"></i></button>
+                }
+                @for (int i = 1; i <= Model.TotalPages; i++)
+                {
+                    var btnClass = "";
+                    @if (Model.PageIndex == i)
+                    {
+                        btnClass = "active";
+                    }
+                    <button class="btn btn-sm btn-primary @btnClass" value="@i">@i</button>
+                }
+                @if (Model.HasNextPage)
+                {
+                    var next = Model.PageIndex + 1;
+                    <button class="btn btn-sm btn-primary" value="@next"><i class="bi bi-arrow-right-short"></i></button>
+                }
             </div>
         </div>
     </div>
-
-    <a type="button" class="btn btn-primary mt-5 mb-2" style="width:130px" asp-controller="Orders" asp-action="Create">Create</a>
 </div>
 
 @section Scripts
 {
     <script>
-        $("tr").click(function () {
-            var id = $('td:first', this).text();
-            window.location.href = '/Orders/' + id;
+        function getQuery() {
+            var keyWord = $("#search-input").val() ?? "";
+            var minSum = $("#min-sum-input").val() ?? "";
+            var maxSum = $("#max-sum-input").val() ?? "";
+            var state = $("#state-input").val() ?? "";
+            var paymentType = $("#payment-type-input").val() ?? "";
+            return "keyWord=" + encodeURIComponent(keyWord)
+                + "&minSum=" + minSum
+                + "&maxSum=" + maxSum
+                + "&paymentType=" + paymentType
+                + "&state=" + state
+                + "&sortOrder=" + "@ViewBag.CurrentSort";
+        }
+
+        $("#search-btn").click(() => {
+            window.location.href = "/Orders/?" + getQuery();
+        })
+
+        $("#pages-list").on("click", "button", function () {
+            var index = $(this).val();
+            window.location.href = '/Orders/?pageNumber=' + index + '&' + getQuery();
         });
 
-        $(document).ready(function () {
-            $("#myInput").on("keyup", function () {
-                var value = $(this).val().toLowerCase();
-                $("#myTable tr").filter(function () {
-                    $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
-                });
-            });
+        $("tbody").on("click", "tr", function () {
+            var id = $('td:first', this).text();
+            window.location.href = '/Orders/' + id;
         });
     </script>
 }

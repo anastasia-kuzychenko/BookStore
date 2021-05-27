@@ -20,9 +20,14 @@ namespace BookStore.WebApp.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Get()
+        public async Task<IActionResult> Get(string sortOrder, string keyWord, decimal? minPrise, decimal? maxPrise, int? pageNumber)
         {
-            var model = await _booksService.Get();
+            ViewBag.CurrentSort = sortOrder;
+            ViewBag.KeyWord = keyWord;
+            ViewBag.MinPrise = minPrise;
+            ViewBag.MaxPrise = maxPrise;
+
+            var model = await _booksService.Get(sortOrder, keyWord, minPrise, maxPrise, pageNumber);
             return View(model);
         }
 

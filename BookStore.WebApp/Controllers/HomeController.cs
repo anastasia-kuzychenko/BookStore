@@ -1,5 +1,6 @@
 ﻿using BookStore.Services;
 using BookStore.WebApp.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 using System.Threading.Tasks;
@@ -13,6 +14,7 @@ using System.Threading.Tasks;
 
 namespace BookStore.WebApp.Controllers
 {
+    [Authorize]
     public class HomeController : Controller
     {
         private readonly IBooksService _booksService;

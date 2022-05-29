@@ -1,11 +1,13 @@
 ﻿using BookStore.Models;
 using BookStore.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Threading.Tasks;
 
 namespace BookStore.WebApp.Controllers
 {
+    [Authorize]
     [Route("[controller]")]
     public class EmployeesController : Controller
     {

@@ -8,6 +8,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.EntityFrameworkCore;
 using BookStore.Data.Implementations;
+using BookStore.WebApp.Extensions;
 
 namespace BookStore.WebApp
 {
@@ -36,6 +37,9 @@ namespace BookStore.WebApp
             services.AddScoped<ICustomerService, CustomersService>();
             services.AddScoped<IOrdersService, OrdersService>();
             services.AddScoped<IAuthorsService, AuthorsService>();
+
+            services.ConfigureIdentity();
+            services.ConfigureExternalLogIn(Configuration);
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -54,6 +58,7 @@ namespace BookStore.WebApp
 
             app.UseRouting();
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
@@ -61,6 +66,7 @@ namespace BookStore.WebApp
                 endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{controller=Home}/{action=Index}/{id?}");
+                endpoints.MapRazorPages();
             });
         }
     }

@@ -62,7 +62,18 @@ body {
     /* Margin bottom by footer height */
     margin-bottom: 60px;
     background-color: #fcfcfc;
+    background: url("../images/wallpaper.png");
+    background-attachment: fixed;
 }
+
+main {
+    background: white;
+    padding-left: 8%;
+    padding-right: 8%;
+    padding-top: 50px;
+    padding-bottom: 50px;
+}
+
 .footer {
   position: absolute;
   bottom: 0;

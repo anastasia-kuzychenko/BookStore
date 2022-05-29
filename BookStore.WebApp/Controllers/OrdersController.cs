@@ -1,5 +1,6 @@
 ﻿using BookStore.Models;
 using BookStore.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
@@ -7,6 +8,7 @@ using System.Threading.Tasks;
 
 namespace BookStore.WebApp.Controllers
 {
+    [Authorize]
     [Route("[controller]")]
     public class OrdersController : Controller
     {
